@@ -1,0 +1,39 @@
+<nav class="light-blue lighten-1" role="navigation">
+  <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Logo</a>
+  </div>
+</nav>
+<div class="section no-pad-bot" id="index-banner">
+  <div class="container">
+    <br><br>
+    <h1 class="header center orange-text">{{title}}</h1>
+    <div *ngIf="polls?.length < 1; else pollsBlock">
+      <div class="row center">
+        <div class="input-field col s6 offset-s3">
+          <i class="material-icons prefix">account_circle</i>
+          <input [(ngModel)]="mail" id="icon_prefix" email type="text" class="validate">
+          <label for="icon_prefix">Email</label>
+        </div>
+      </div>
+      <div class="row center">
+        <button class="btn waves-effect waves-light blue lighten-1" type="submit" name="action" (click)="fazerLogin()">
+        Login
+        <i class="material-icons right">send</i>
+      </button>
+      </div>
+    </div>
+    <ng-template #pollsBlock>
+      <div class="collection">
+        <a *ngFor="let thePoll of polls; let i = index" href="#!" class="collection-item">
+          {{thePoll.title}} - {{thePoll.start | date:'dd/MM/yyyy HH:mm' }} 
+          <span class="new badge green" data-badge-caption="Options">=> {{thePoll.choices}} {{thePoll.choices?.length}} <=</span>
+        </a>
+      <div class="collection">
+        <a *ngFor="let theChoice of thePoll?.choices; let i = index" href="#!" class="collection-item">   {{theChoice.description}}
+          {{theChoice.mailVote?.length}}       
+        </a>
+      </div>
+  </div>
+  </ng-template>
+  <br>
+</div>
+</div>
