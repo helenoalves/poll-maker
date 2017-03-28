@@ -1,0 +1,60 @@
+buildscript {
+	ext {
+		springBootVersion = '1.5.2.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath('se.transmode.gradle:gradle-docker:1.2')
+	}
+}
+
+group = 'poll-maker'
+
+apply plugin: 'docker'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+
+jar {
+	baseName = 'pool-maker'
+	version =  '0.0.0'
+}
+
+bootRun {
+  systemProperties = System.properties
+}
+
+repositories {
+	// NOTE: You should declare only repositories that you need here
+	mavenCentral()
+}
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter")
+	compile("org.springframework.boot:spring-boot-starter-web")
+//	compile("org.springframework.boot:spring-boot-starter-data-redis")
+	compile("org.springframework.boot:spring-boot-starter-actuator")
+	compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")	
+	
+	testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.6'
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+  push = false
+  applicationName = jar.baseName
+  dockerfile = file('src/main/docker/Dockerfile')
+  doFirst {
+    copy {
+      from jar
+      into stageDir
+    }
+  }
+}
