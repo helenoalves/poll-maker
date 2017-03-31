@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.poll.maker.model.Poll;
+import org.poll.maker.model.PollMail;
 import org.poll.maker.model.PollOption;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,15 +63,15 @@ public class DafaultPollFactory {
 		return optionsList;
 	}
 
-	private List<String> getMailPermissions() {
-		List<String> mailList = new ArrayList<String>();
-		mailList.add("helenoa@gmail.com");
-		mailList.add("filipebdh@gmail.com");
-		mailList.add("alexiscviurb@gmail.com");
-		mailList.add("brunooliveira1014@gmail.com");
-		mailList.add("leonardo.alegre@gmail.com");
-		mailList.add("catarinat@dbserver.com.br");
-		mailList.add("ginaneves@gmail.com");
+	private List<PollMail> getMailPermissions() {
+		List<PollMail> mailList = new ArrayList<PollMail>();
+		mailList.add(new PollMail().setMail("helenoa@gmail.com").setName("Heleno Alves").setConfirmed(true));
+		mailList.add(new PollMail().setMail("filipebdh@gmail.com").setName("Heleno Alves").setConfirmed(false));
+		mailList.add(new PollMail().setMail("alexiscviurb@gmail.com").setName("Heleno Alves").setConfirmed(false));
+		mailList.add(new PollMail().setMail("brunooliveira1014@gmail.com").setName("Heleno Alves").setConfirmed(false));
+		mailList.add(new PollMail().setMail("leonardo.alegre@gmail.com").setName("Heleno Alves").setConfirmed(false));
+		mailList.add(new PollMail().setMail("catarinat@dbserver.com.br").setName("Heleno Alves").setConfirmed(false));
+		mailList.add(new PollMail().setMail("ginaneves@gmail.com").setName("Heleno Alves").setConfirmed(false));
 
 		return mailList;
 	}

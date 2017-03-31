@@ -14,7 +14,7 @@ public class Poll {
 	private Poll depends;
 	private List<PollOption> options = new ArrayList<PollOption>();
 	private PollOption winner;
-	private List<String> mailPermissions = new ArrayList<String>();
+	private List<PollMail> mailPermissions = new ArrayList<PollMail>();
 
 	public String getTitle() {
 		return title;
@@ -79,11 +79,11 @@ public class Poll {
 		return this;
 	}
 
-	public List<String> getMailPermissions() {
+	public List<PollMail> getMailPermissions() {
 		return mailPermissions;
 	}
 
-	public Poll setMailPermissions(List<String> mailPermissions) {
+	public Poll setMailPermissions(List<PollMail> mailPermissions) {
 		this.mailPermissions = mailPermissions;
 		return this;
 	}

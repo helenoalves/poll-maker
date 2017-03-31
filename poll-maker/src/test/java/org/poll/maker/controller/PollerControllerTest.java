@@ -26,7 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PollerTest {
+public class PollerControllerTest {
 
 	@LocalServerPort
 	private int port;
@@ -59,6 +59,7 @@ public class PollerTest {
 
 		ResponseEntity<List> response = template.getForEntity(targetUrl, List.class);
 		assertThat(Long.valueOf(response.getBody().size()), equalTo(pollDays));
+
 	}
 
 	@Test

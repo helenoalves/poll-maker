@@ -1,12 +1,14 @@
 package org.poll.maker.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PollOption {
 	private String description;
 	private String detail;
-	private List<String> mailVote = new ArrayList<String>();
+	private List<PollMail> mailVote = new ArrayList<PollMail>();
+	private LocalDateTime winnerDate;
 
 	public String getDescription() {
 		return description;
@@ -26,13 +28,21 @@ public class PollOption {
 		return this;
 	}
 
-	public List<String> getMailVote() {
+	public List<PollMail> getMailVote() {
 		return mailVote;
 	}
 
-	public PollOption setMailVote(List<String> mailVote) {
+	public PollOption setMailVote(List<PollMail> mailVote) {
 		this.mailVote = mailVote;
 		return this;
+	}
+
+	public LocalDateTime getWinnerDate() {
+		return winnerDate;
+	}
+
+	public void setWinnerDate(LocalDateTime winnerDate) {
+		this.winnerDate = winnerDate;
 	}
 
 	public String getId() {

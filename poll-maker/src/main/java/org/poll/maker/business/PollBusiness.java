@@ -1,23 +1,42 @@
 package org.poll.maker.business;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.poll.maker.exception.PollException;
 import org.poll.maker.model.Poll;
+import org.poll.maker.model.PollMail;
 import org.poll.maker.model.PollOption;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PollBusiness {
 
 	@Autowired
+	private JavaMailSender javaMailSender;
+
+	@Autowired
 	private List<Poll> polls;
+
+	public List<Poll> getPolls() {
+		return polls;
+	}
+
+	public void setPolls(List<Poll> polls) {
+		this.polls = polls;
+	}
 
 	public List<Poll> getMailPolls(String mail) throws PollException {
 
-		List<Poll> result = polls.stream().filter(thePoll -> thePoll.getMailPermissions().contains(mail))
+		List<Poll> result = polls.stream()
+				.filter(thePoll -> thePoll.getMailPermissions().contains(new PollMail().setMail(mail)))
 				.collect(Collectors.toList());
 
 		if (result.size() < 1) {
@@ -30,7 +49,8 @@ public class PollBusiness {
 	public Poll vote(String pollId, String choiceId, String voteMail) throws PollException {
 
 		List<Poll> pollList = polls.stream()
-				.filter(thePoll -> thePoll.getId().equals(pollId) && thePoll.getMailPermissions().contains(voteMail))
+				.filter(thePoll -> thePoll.getId().equals(pollId)
+						&& thePoll.getMailPermissions().contains(new PollMail().setMail(voteMail)))
 				.collect(Collectors.toList());
 
 		if (pollList.size() < 1) {
@@ -46,7 +66,8 @@ public class PollBusiness {
 		Poll toReturn = pollList.get(0);
 
 		List<PollOption> choicesList = toReturn.getOptions().stream()
-				.filter(theChoice -> theChoice.getMailVote().contains(voteMail)).collect(Collectors.toList());
+				.filter(theChoice -> theChoice.getMailVote().contains(new PollMail().setMail(voteMail)))
+				.collect(Collectors.toList());
 
 		if (choicesList.size() > 0) {
 			throw new PollException("You already voted in this poll !");
@@ -66,9 +87,69 @@ public class PollBusiness {
 		}
 
 		PollOption toVote = choicesList.get(0);
-		toVote.getMailVote().add(voteMail);
+		toVote.getMailVote().add(new PollMail().setMail(voteMail));
 
 		return toReturn;
 	}
 
+	@Scheduled(cron = "0 * * * * *")
+	public void pollScheduledFinish() {
+		LocalDateTime now = LocalDateTime.now();
+		for (Poll poll : polls) {
+			if (poll.getWinner() == null && (poll.getFinish().isAfter(now) || poll.getFinish().isEqual(now))) {
+				finishPoll(poll, now);
+			}
+			if (poll.getDepends() != null && poll.getDepends().getWinner() != null) {
+				definePastWinner(poll.getDepends().getWinner(), poll);
+			}
+		}
+	}
+
+	private void definePastWinner(PollOption pastWinner, Poll poll) {
+		PollOption newPastWinner = poll.getOptions().stream()
+				.filter(pollOption -> pastWinner.getId().equals(pollOption.getId())).findAny().orElse(null);
+
+		notifyInvalidate(newPastWinner.getMailVote(), pastWinner, poll);
+		newPastWinner.setMailVote(new ArrayList<PollMail>());
+		newPastWinner.setWinnerDate(pastWinner.getWinnerDate());
+	}
+
+	private void notifyInvalidate(List<PollMail> mailVote, PollOption pastWinner, Poll poll) {
+		for (PollMail mail : mailVote) {
+			if (mail.isConfirmed()) {
+				sendMail(mail.getMail(), "Poll Maker: Invalidate vote for " + poll.getTitle() + " " + poll.getFinish(),
+						"Your vote was invalidated in the " + poll.getTitle() + " " + poll.getFinish()
+								+ "\nBud don't worry you cant vote again !");
+			}
+		}
+	}
+
+	public void sendMail(String to, String subject, String body) {
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setTo(to);
+		message.setSubject(subject);
+		message.setText(body);
+		javaMailSender.send(message);
+	}
+
+	private void finishPoll(Poll poll, LocalDateTime winnerDate) {
+		final Comparator<PollOption> voteCompare = (p1, p2) -> Integer.compare(p1.getMailVote().size(),
+				p2.getMailVote().size());
+		PollOption winner = poll.getOptions().stream().max(voteCompare).get();
+		winner.setWinnerDate(winnerDate);
+		poll.setWinner(winner);
+
+		notifyWinner(poll, winnerDate);
+
+	}
+
+	private void notifyWinner(Poll poll, LocalDateTime winnerDate) {
+		for (PollMail mail : poll.getMailPermissions()) {
+			if (mail.isConfirmed()) {
+				sendMail(mail.getMail(), "Poll Maker: We have a winner for " + poll.getTitle() + " " + poll.getFinish(),
+						"We got a winner for the " + poll.getTitle() + " " + poll.getFinish() + "\nThe oscar goes to: "
+								+ poll.getWinner().getDescription());
+			}
+		}
+	}
 }
