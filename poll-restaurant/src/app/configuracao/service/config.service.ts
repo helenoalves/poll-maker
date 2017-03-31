@@ -18,6 +18,6 @@ export class ConfigService {
 
     private handleError(error : Response){
         console.error(error);
-        return Observable.throw(error.json().error || 'Server Error');
+        return Observable.throw(error || 'Undefined Error on Server Access !');
     }
 }

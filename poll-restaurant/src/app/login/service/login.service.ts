@@ -1,20 +1,21 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Headers, Response } from '@angular/http';
-import { Poll } from './poll';
-import { Config } from './configuracao/model/config';
-import { ConfigService } from './configuracao/service/config.service';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/Rx';
+
+import { ConfigService } from '../../configuracao/service/config.service';
+import { Config } from '../../configuracao/model/config';
+import { Poll } from '../../poll/model/poll';
 
 @Injectable()
 export class LoginService {
   private sysConfig: Config;
-  private errorString: string;
+  errorEmitter = new EventEmitter<Response>();
 
-  esconderMenuEmitter = new EventEmitter<Poll[]>();
-
-  constructor(private _configService: ConfigService, private http: Http) { }
+  private userAuth = false;
+  
+  constructor(private _configService: ConfigService, private http: Http, private router: Router) { }
 
 
   private _pollUrl = 'http://<serviceURL>:<servicePort>/polls?mail=<mail>';
@@ -32,27 +33,31 @@ export class LoginService {
 
   private handleError(error: Response) {
     console.error(error);
-    return Observable.throw(error.json().error || 'Server Error');
+    return Observable.throw(error || 'Undefined Error on Server Access !');
   }
 
-  fazerLogin(mail) {
+  doLogin(mail) {
     this._configService
       .getConfig()
       .subscribe(
       config => { this.sysConfig = config }
-      , error => this.errorString = <any>error
+      , error => this.errorEmitter.emit(error)
       , () => this.getPolls(this.sysConfig, mail)
         .subscribe(
-        polls => { this.loginPolls(polls) }
-        , error => this.errorString = <any>error
+        polls => { this.loginPolls(polls, mail) }
+        , error => this.errorEmitter.emit(error)
         )
       );
   }
 
-  loginPolls(polls: Poll[]) {
-    this.esconderMenuEmitter.emit(polls);
-
-    console.log(polls);
+  loginPolls(polls: Poll[], mail) {
+    if(polls.length > 0){
+      this.router.navigate(['/poll', { polls: JSON.stringify(polls), mail: mail }]);
+      this.userAuth = true;
+    }
   }
 
+  isUserAuth(){
+    return this.userAuth;
+  }
 }

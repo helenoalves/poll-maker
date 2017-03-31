@@ -1,0 +1,18 @@
+<div class="col s12 m7">
+  <h2 class="header">{{poll.title}}</h2>
+  <div class="card">
+    <div class="card-image">
+      <img src="./images/detail.jpg" height="120" width="100">
+      <span class="card-title blue-text">{{poll.description}}</span>    
+    </div>
+    <div class="card-stacked">
+      <div class="card-action">
+        <form action="#">
+          <p *ngFor="let theOption of poll.options; let i = index">
+            {{ theOption.description }} - {{ theOption.mailVote.length }}
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
