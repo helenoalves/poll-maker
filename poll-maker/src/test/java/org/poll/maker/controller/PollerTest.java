@@ -74,6 +74,6 @@ public class PollerTest {
 				.toUri();
 
 		ResponseEntity<Poll> response = template.getForEntity(targetUrl, Poll.class);
-		assertThat(response.getBody().getChoiches().get(1).getMailVote().size(), equalTo(1));
+		assertThat(response.getBody().getOptions().get(1).getMailVote().size(), equalTo(1));
 	}
 }

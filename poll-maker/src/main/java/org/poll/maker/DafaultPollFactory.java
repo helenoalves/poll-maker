@@ -37,9 +37,9 @@ public class DafaultPollFactory {
 
 		Poll toAdd = new Poll().setStart(startDate).setFinish(finishDate);
 		toAdd.setTitle("Seleção de Restaurante");
-		toAdd.setDescription("Eleição do restaurante para almoçar em: " + toAdd.getStart());
+		toAdd.setDescription("Eleição do restaurante para almoçar.");
 		toAdd.setMailPermissions(getMailPermissions());
-		toAdd.setChoiches(getChoices());
+		toAdd.setOptions(getOptions());
 		if (pollList.size() > 0) {
 			toAdd.setDepends(pollList.get(pollList.size() - 1));
 		}
@@ -49,17 +49,17 @@ public class DafaultPollFactory {
 		return finishDate;
 	}
 
-	private List<PollOption> getChoices() {
-		List<PollOption> choicesList = new ArrayList<PollOption>(7);
-		choicesList.add(new PollOption().setDescription("Restaurante A"));
-		choicesList.add(new PollOption().setDescription("Restaurante B"));
-		choicesList.add(new PollOption().setDescription("Restaurante C"));
-		choicesList.add(new PollOption().setDescription("Restaurante D"));
-		choicesList.add(new PollOption().setDescription("Restaurante E"));
-		choicesList.add(new PollOption().setDescription("Restaurante F"));
-		choicesList.add(new PollOption().setDescription("Restaurante G"));
+	private List<PollOption> getOptions() {
+		List<PollOption> optionsList = new ArrayList<PollOption>(7);
+		optionsList.add(new PollOption().setDescription("Restaurante A"));
+		optionsList.add(new PollOption().setDescription("Restaurante B"));
+		optionsList.add(new PollOption().setDescription("Restaurante C"));
+		optionsList.add(new PollOption().setDescription("Restaurante D"));
+		optionsList.add(new PollOption().setDescription("Restaurante E"));
+		optionsList.add(new PollOption().setDescription("Restaurante F"));
+		optionsList.add(new PollOption().setDescription("Restaurante G"));
 
-		return choicesList;
+		return optionsList;
 	}
 
 	private List<String> getMailPermissions() {

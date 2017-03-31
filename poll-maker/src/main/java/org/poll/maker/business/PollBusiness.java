@@ -45,14 +45,14 @@ public class PollBusiness {
 
 		Poll toReturn = pollList.get(0);
 
-		List<PollOption> choicesList = toReturn.getChoiches().stream()
+		List<PollOption> choicesList = toReturn.getOptions().stream()
 				.filter(theChoice -> theChoice.getMailVote().contains(voteMail)).collect(Collectors.toList());
 
 		if (choicesList.size() > 0) {
 			throw new PollException("You already voted in this poll !");
 		}
 
-		choicesList = toReturn.getChoiches().stream().filter(theChoice -> theChoice.getId().equals(choiceId))
+		choicesList = toReturn.getOptions().stream().filter(theChoice -> theChoice.getId().equals(choiceId))
 				.collect(Collectors.toList());
 
 		if (choicesList.size() < 1) {

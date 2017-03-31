@@ -12,7 +12,7 @@ public class Poll {
 	private LocalDateTime start;
 	private LocalDateTime finish;
 	private Poll depends;
-	private List<PollOption> choiches = new ArrayList<PollOption>();
+	private List<PollOption> options = new ArrayList<PollOption>();
 	private PollOption winner;
 	private List<String> mailPermissions = new ArrayList<String>();
 
@@ -61,12 +61,12 @@ public class Poll {
 		return this;
 	}
 
-	public List<PollOption> getChoiches() {
-		return choiches;
+	public List<PollOption> getOptions() {
+		return options;
 	}
 
-	public Poll setChoiches(List<PollOption> choiches) {
-		this.choiches = choiches;
+	public Poll setOptions(List<PollOption> options) {
+		this.options = options;
 		return this;
 	}
 
