@@ -10,26 +10,40 @@ import { Poll } from '../../poll/model/poll';
 
 @Injectable()
 export class PollService {
-  private sysConfig: Config;
   errorEmitter = new EventEmitter<Response>();
   private poll: Poll;
 
-  constructor(private _configService: ConfigService, private http: Http, private router: Router) { }
+  constructor(private configService: ConfigService, private http: Http, private router: Router) {
+    configService.getConfig().subscribe(config => this.replaceConfig(config));
+  }
 
 
   private _pollUrl = 'http://<serviceURL>:<servicePort>/vote?poll=<poll>&choice=<choice>&mail=<mail>';
 
-  replaceConfig(sysConfig: Config, mail, pollId, choiceId) {
+  replaceConfig(sysConfig: Config) {
     this._pollUrl = this._pollUrl.replace('<serviceURL>', sysConfig.serviceURL);
     this._pollUrl = this._pollUrl.replace('<servicePort>', sysConfig.servicePort.toString());
-    this._pollUrl = this._pollUrl.replace('<poll>', pollId);
-    this._pollUrl = this._pollUrl.replace('<choice>', choiceId);
-    this._pollUrl = this._pollUrl.replace('<mail>', mail);
   }
 
-  votePoll(sysConfig: Config, mail, pollId, choiceId) {
-    this.replaceConfig(sysConfig, mail, pollId, choiceId);
-    return this.http.get(this._pollUrl).map(res => <Poll>res.json()).catch(this.handleError);
+  replaceParameters(mail, pollId, choiceId): string {
+    return this._pollUrl.replace('<poll>', pollId)
+      .replace('<choice>', choiceId)
+      .replace('<mail>', mail);
+  }
+
+  votePoll(mail, pollId, choiceId): Observable<Poll> {
+    return this.http.get(this.replaceParameters(mail, pollId, choiceId))
+      .map(this.extractData)
+      //.do(data => console.log(data))
+      .catch(this.handleError);
+  }
+
+  private extractData(res: Response) {
+    if (res.status < 200 || res.status >= 300) {
+      throw new Error('Bad response status: ' + res.status);
+    }
+    let body = res.json();
+    return body.data || {};
   }
 
   private handleError(error: Response) {
@@ -38,16 +52,10 @@ export class PollService {
   }
 
   vote(mail, pollId, choiceId) {
-    this._configService
-      .getConfig()
+    this.votePoll(mail, pollId, choiceId)
       .subscribe(
-      config => { this.sysConfig = config }
+      poll => { this.pollResults(poll) }
       , error => this.errorEmitter.emit(error)
-      , () => this.votePoll(this.sysConfig, mail, pollId, choiceId)
-        .subscribe(
-        poll => { this.pollResults(poll) }
-        , error => this.errorEmitter.emit(error)
-        )
       );
   }
 

@@ -7,8 +7,15 @@ describe('poll-restaurant App', () => {
     page = new PollRestaurantPage();
   });
 
-  it('should display message saying app works', () => {
+  it('should display message saying Poll Restaurant', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
+    expect(page.getTextTitleElement().getText()).toEqual('Poll Restaurant');
   });
+
+  it('should display input mail', () => {
+    page.navigateTo();
+    page.getInputMailElement().sendKeys('helenoa@gmail.com');
+    page.getButtonLoginElement().click();
+    expect(page.getTextPollElement().getText()).toEqual('Poll List');
+  });  
 });

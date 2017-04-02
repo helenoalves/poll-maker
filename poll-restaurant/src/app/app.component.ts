@@ -14,10 +14,10 @@ export class AppComponent {
 
   ngOnInit() {
     this.loginService.errorEmitter.subscribe(
-      error => this.setError(error)
+      error => this.setError(error.json().message)
     );
     this.pollService.errorEmitter.subscribe(
-      error => this.setError(error)
+      error => this.setError(error.json().message)
     );
   }
 
@@ -26,8 +26,8 @@ export class AppComponent {
     this.pollService.errorEmitter.unsubscribe();
   }
 
-  setError(error: Response){
-    this.errorMessage = error.json().message;
+  setError(error: string){
+    this.errorMessage = error;
   }
 
   hasError() {

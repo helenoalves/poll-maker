@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule, Http } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { MaterializeModule } from 'angular2-materialize';
 
@@ -15,6 +15,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { PollService } from "app/poll/service/poll.service";
 import { PollDetailsComponent } from "app/poll/component/poll.details.component";
 import { PollResultsComponent } from "app/poll/component/poll.results.component";
+import { Config } from "app/configuracao/model/config";
+import { Observable } from "rxjs/Observable";
 
 @NgModule({
   declarations: [

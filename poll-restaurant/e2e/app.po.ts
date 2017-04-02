@@ -5,7 +5,19 @@ export class PollRestaurantPage {
     return browser.get('/');
   }
 
-  getParagraphText() {
-    return element(by.css('app-root h1')).getText();
+  getTextPollElement() {
+    return element(by.id('text-poll'));
+  }
+
+  getTextTitleElement() {
+    return element(by.id('text-title'));
+  }
+
+  getInputMailElement() {
+    return element(by.id('input-mail'));
+  }
+
+  getButtonLoginElement() {
+    return element(by.id('button-login'));
   }
 }
