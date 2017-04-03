@@ -10,7 +10,10 @@ import org.poll.maker.exception.PollException;
 import org.poll.maker.model.Poll;
 import org.poll.maker.model.PollMail;
 import org.poll.maker.model.PollOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PollBusiness {
 
+	private static final Logger LOG = LoggerFactory.getLogger(PollBusiness.class);
 	@Autowired
 	private JavaMailSender javaMailSender;
 
@@ -115,16 +119,22 @@ public class PollBusiness {
 	}
 
 	private void notifyInvalidate(List<PollMail> mailVote, PollOption pastWinner, Poll poll) {
-		for (PollMail mail : mailVote) {
-			if (mail.isConfirmed()) {
-				sendMail(mail.getMail(), "Poll Maker: Invalidate vote for " + poll.getTitle() + " " + poll.getFinish(),
-						"Your vote was invalidated in the " + poll.getTitle() + " " + poll.getFinish()
-								+ "\nBud don't worry you cant vote again !");
+		try {
+			for (PollMail mail : mailVote) {
+				if (mail.isConfirmed()) {
+					sendMail(mail.getMail(),
+							"Poll Maker: Invalidate vote for " + poll.getTitle() + " " + poll.getFinish(),
+							"Your vote was invalidated in the " + poll.getTitle() + " " + poll.getFinish()
+									+ "\nBud don't worry you cant vote again !");
+				}
 			}
+		} catch (MailException e) {
+			LOG.warn(
+					"Error sending invalidate mail ! Verify you connection configuration.\n" + e.getLocalizedMessage());
 		}
 	}
 
-	public void sendMail(String to, String subject, String body) {
+	public void sendMail(String to, String subject, String body) throws MailException {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setTo(to);
 		message.setSubject(subject);
@@ -144,12 +154,17 @@ public class PollBusiness {
 	}
 
 	private void notifyWinner(Poll poll, LocalDateTime winnerDate) {
-		for (PollMail mail : poll.getMailPermissions()) {
-			if (mail.isConfirmed()) {
-				sendMail(mail.getMail(), "Poll Maker: We have a winner for " + poll.getTitle() + " " + poll.getFinish(),
-						"We got a winner for the " + poll.getTitle() + " " + poll.getFinish() + "\nThe oscar goes to: "
-								+ poll.getWinner().getDescription());
+		try {
+			for (PollMail mail : poll.getMailPermissions()) {
+				if (mail.isConfirmed()) {
+					sendMail(mail.getMail(),
+							"Poll Maker: We have a winner for " + poll.getTitle() + " " + poll.getFinish(),
+							"We got a winner for the " + poll.getTitle() + " " + poll.getFinish()
+									+ "\nThe oscar goes to: " + poll.getWinner().getDescription());
+				}
 			}
+		} catch (MailException e) {
+			LOG.warn("Error sending winner mail ! Verify you connection configuration.\n" + e.getLocalizedMessage());
 		}
 	}
 }

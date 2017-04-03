@@ -4,7 +4,7 @@ public class PollMail {
 
 	private String name;
 	private String mail;
-	private Boolean confirmed;
+	private Boolean confirmed = new Boolean(false);
 
 	public String getName() {
 		return name;

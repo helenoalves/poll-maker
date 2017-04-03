@@ -1,5 +1,6 @@
 package org.poll.maker;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -38,11 +39,12 @@ public class DafaultPollFactory {
 
 		Poll toAdd = new Poll().setStart(startDate).setFinish(finishDate);
 		toAdd.setTitle("Seleção de Restaurante");
-		toAdd.setDescription("Eleição do restaurante para almoçar.");
+		toAdd.setDescription("Eleição do restaurante para almoçar");
 		toAdd.setMailPermissions(getMailPermissions());
 		toAdd.setOptions(getOptions());
 		if (pollList.size() > 0) {
-			toAdd.setDepends(pollList.get(pollList.size() - 1));
+			if (toAdd.getStart().getDayOfWeek().compareTo(DayOfWeek.MONDAY) != 0)
+				toAdd.setDepends(pollList.get(pollList.size() - 1));
 		}
 
 		pollList.add(toAdd);

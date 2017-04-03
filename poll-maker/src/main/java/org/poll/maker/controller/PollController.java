@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin
 @RestController
 public class PollController {
 
@@ -23,6 +22,7 @@ public class PollController {
 		return "Are you trying to access poll maker ? This is not the path !";
 	}
 
+	@CrossOrigin
 	@RequestMapping("/polls")
 	public List<Poll> listPolls(@RequestParam(required = true) String mail) throws PollException {
 		if (mail == null || mail.isEmpty()) {
@@ -31,7 +31,8 @@ public class PollController {
 
 		return pollBusiness.getMailPolls(mail);
 	}
-
+	
+	@CrossOrigin
 	@RequestMapping("/vote")
 	public Poll votePoll(@RequestParam(required = true) String poll, @RequestParam(required = true) String choice,
 			@RequestParam(required = true) String mail) throws PollException {

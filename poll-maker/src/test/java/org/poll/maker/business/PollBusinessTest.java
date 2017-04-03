@@ -76,8 +76,6 @@ public class PollBusinessTest {
 
 		pollBusiness.pollScheduledFinish();
 
-		Thread.sleep(2000);
-
 		assertReceivedMessage(wiser).to("helenoa@gmail.com")
 				.containsSubject("Poll Maker: We have a winner for Test Poll " + formatter.format(testDateTime) + ".*");
 	}
