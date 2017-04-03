@@ -51,3 +51,4 @@ The list of main dependencies are:
 3. Increase e2e test, today we have only one
 4. If you already voted in one poll go straight for the results
 5. Show on screen invalidated restaurants
+6. Pagination on poll list
