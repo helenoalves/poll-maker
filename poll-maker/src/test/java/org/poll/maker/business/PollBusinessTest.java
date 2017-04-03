@@ -1,5 +1,7 @@
 package org.poll.maker.business;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.poll.maker.test.util.WiserAssertions.assertReceivedMessage;
 
 import java.time.LocalDateTime;
@@ -7,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.After;
 import org.junit.Before;
@@ -68,7 +71,7 @@ public class PollBusinessTest {
 		List<PollOption> optionsList = new ArrayList<PollOption>();
 		optionsList.add(new PollOption().setDescription("Test Option").setMailVote(mailList));
 
-		List<Poll> pollList = new ArrayList<Poll>();
+		CopyOnWriteArrayList<Poll> pollList = new CopyOnWriteArrayList<Poll>();
 		pollList.add(new Poll().setTitle("Test Poll").setFinish(testDateTime).setMailPermissions(mailList)
 				.setOptions(optionsList));
 
@@ -78,5 +81,7 @@ public class PollBusinessTest {
 
 		assertReceivedMessage(wiser).to("helenoa@gmail.com")
 				.containsSubject("Poll Maker: We have a winner for Test Poll " + formatter.format(testDateTime) + ".*");
+
+		assertThat(pollBusiness.getPolls().size(), equalTo(0));
 	}
 }

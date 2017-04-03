@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.poll.maker.model.Poll;
 import org.poll.maker.model.PollMail;
@@ -18,15 +19,20 @@ import org.springframework.context.annotation.Configuration;
 public class DafaultPollFactory {
 
 	@Bean
-	List<Poll> loadDafaultPoll() {
+	CopyOnWriteArrayList<Poll> loadDafaultPoll() {
 		return createPolls(null);
 	}
 
-	private List<Poll> createPolls(String isoDateTimeLimit) {
+	private CopyOnWriteArrayList<Poll> createPolls(String isoDateTimeLimit) {
 
-		List<Poll> toReturn = new ArrayList<Poll>();
+		CopyOnWriteArrayList<Poll> toReturn = new CopyOnWriteArrayList<Poll>();
 		LocalDateTime toDate = getDateLimit(isoDateTimeLimit);
-		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0));
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 0));
+
+		if (LocalDateTime.now().isBefore(startDate)) {
+			createPoll(toReturn, startDate.minusDays(1));
+		}
+
 		while (startDate.isBefore(toDate) || startDate.isEqual(toDate)) {
 			startDate = createPoll(toReturn, startDate);
 		}

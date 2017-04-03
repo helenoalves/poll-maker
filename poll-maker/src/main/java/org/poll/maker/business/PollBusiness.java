@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 import org.poll.maker.exception.PollException;
@@ -27,13 +28,13 @@ public class PollBusiness {
 	private JavaMailSender javaMailSender;
 
 	@Autowired
-	private List<Poll> polls;
+	private CopyOnWriteArrayList<Poll> polls;
 
 	public List<Poll> getPolls() {
 		return polls;
 	}
 
-	public void setPolls(List<Poll> polls) {
+	public void setPolls(CopyOnWriteArrayList<Poll> polls) {
 		this.polls = polls;
 	}
 
@@ -148,6 +149,7 @@ public class PollBusiness {
 		PollOption winner = poll.getOptions().stream().max(voteCompare).get();
 		winner.setWinnerDate(winnerDate);
 		poll.setWinner(winner);
+		getPolls().remove(poll);
 
 		notifyWinner(poll, winnerDate);
 

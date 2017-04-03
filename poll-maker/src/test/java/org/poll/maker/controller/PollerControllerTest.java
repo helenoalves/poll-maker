@@ -54,6 +54,11 @@ public class PollerControllerTest {
 				ChronoUnit.DAYS);
 		pollDays++;// É exclusivo
 
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 0));
+		if (nowDateTime.isBefore(startDate)) {
+			pollDays++;
+		}
+		
 		URI targetUrl = UriComponentsBuilder.fromUriString(base.toString()).path("/polls")
 				.queryParam("mail", "helenoa@gmail.com").build().toUri();
 
@@ -64,7 +69,7 @@ public class PollerControllerTest {
 
 	@Test
 	public void testVote() {
-		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0));
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 0));
 		LocalDateTime finishDate = startDate.plusDays(1);
 
 		URI targetUrl = UriComponentsBuilder.fromUriString(base.toString()).path("/vote")
