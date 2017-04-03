@@ -65,10 +65,10 @@ describe('Http-PollService (mockBackend)', () => {
             service = new PollService(configService, http, router);
             fakePoll = new Poll('1', 'Poll Test 1', '', undefined, undefined, undefined);
 
-            let optionsFull = new ResponseOptions({ status: 200, body: { data: fakePoll } });
+            let optionsFull = new ResponseOptions({ status: 200, body: fakePoll });
             responseFull = new Response(optionsFull);
 
-            let optionsEmpty = new ResponseOptions({ status: 200, body: { data: [] } });
+            let optionsEmpty = new ResponseOptions({ status: 200, body: [] });
             responseEmpty = new Response(optionsEmpty);
         }));
 

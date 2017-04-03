@@ -1,17 +1,18 @@
-<div class="col s12 m7">
-  <h2 class="header">{{poll.title}}</h2>
-  <div class="card">
+<div class="col s12 m8">
+  <h4 class="header center blue-grey-text">{{poll.title}}</h4>
+  <div class="card hoverable">
     <div class="card-image">
-      <img src="./images/detail.jpg" height="120" width="100">
-      <span class="card-title blue-text">{{poll.description}}</span>
-      <a class="btn-floating halfway-fab waves-effect waves-light blue" (click)="vote()"><i class="material-icons">done</i></a>       
+      <img src="./images/detail.png" height="200" width="40">
+      <a id="link-done" class="btn-floating halfway-fab waves-effect waves-light blue" (click)="vote()"><i class="material-icons">done</i></a>
     </div>
     <div class="card-stacked">
       <div class="card-action">
+        <span class="blue-grey-text">{{poll.description}} - {{poll.start | date:'dd/MM/yyyy HH:mm' }} to {{poll.finish | date:'dd/MM/yyyy HH:mm' }}</span>
         <form action="#">
           <p *ngFor="let theOption of poll.options; let i = index">
-            <input name="group" type="radio" id="{{ theOption.id }}" [checked]="index === 0" [value]="theOption.id" (change)="onSelectionChange(theOption)" />
-            <label for="{{ theOption.id }}">{{ theOption.description }} </label>
+            <input name="group" type="radio" id="{{ theOption.id }}" [checked]="index === 0" [value]="theOption.id" (change)="onSelectionChange(theOption)"
+            />
+            <label for="{{ theOption.id }}" class="blue-grey-text">{{ theOption.description }} </label>
           </p>
         </form>
       </div>

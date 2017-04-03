@@ -60,7 +60,7 @@ export class LoginService {
   loginPolls(polls: Poll[], mail) {
     if (polls.length > 0) {
       this.userAuth = true;
-      this.router.navigate(['/poll', { polls: JSON.stringify(polls), mail: mail }]);
+      this.router.navigate(['/poll', { polls: JSON.stringify(polls), mail: mail }], { skipLocationChange: true });
     } else {
       this.userAuth = false;
     }

@@ -8,7 +8,7 @@ import { PollService } from "app/poll/service/poll.service";
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  title = 'Poll Restaurant';
+  title = 'Poll Restaurants';
   errorMessage: string;
   constructor(private loginService: LoginService, private pollService: PollService) { }
 

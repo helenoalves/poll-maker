@@ -32,6 +32,7 @@ export class PollService {
   }
 
   votePoll(mail, pollId, choiceId): Observable<Poll> {
+
     return this.http.get(this.replaceParameters(mail, pollId, choiceId))
       .map(this.extractData)
       //.do(data => console.log(data))
@@ -42,8 +43,7 @@ export class PollService {
     if (res.status < 200 || res.status >= 300) {
       throw new Error('Bad response status: ' + res.status);
     }
-    let body = res.json();
-    return body.data || {};
+    return <Poll>res.json() || [];
   }
 
   private handleError(error: Response) {
@@ -54,12 +54,12 @@ export class PollService {
   vote(mail, pollId, choiceId) {
     this.votePoll(mail, pollId, choiceId)
       .subscribe(
-      poll => { this.pollResults(poll) }
+      poll => { this.pollResults(poll, mail) }
       , error => this.errorEmitter.emit(error)
       );
   }
 
-  pollResults(poll: Poll) {
-    this.router.navigate(['/poll-results', { poll: JSON.stringify(poll) }]);
+  pollResults(poll: Poll, mail) {
+    this.router.navigate(['/poll-results', { poll: JSON.stringify(poll), mail: mail }], { skipLocationChange: true });
   }
 }

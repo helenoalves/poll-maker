@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PollService } from '../service/poll.service';
 import { Poll } from '../model/poll';
+import { LoginService } from "app/login/service/login.service";
 
 @Component({
   selector: 'poll-results',
@@ -12,7 +12,7 @@ export class PollResultsComponent implements OnInit {
   poll: Poll;
   subscribe: any;
 
-  constructor(private route: ActivatedRoute, private pollService: PollService) { }
+  constructor(private route: ActivatedRoute, private loginService: LoginService) { }
 
   ngOnInit() {
     this.subscribe = this.route.params.subscribe(params => {
@@ -25,7 +25,7 @@ export class PollResultsComponent implements OnInit {
     this.subscribe.unsubscribe();
   }
 
-  vote(choiceId) {
-    this.pollService.vote(this.mail, this.poll.id, choiceId);
-  }  
+  back(){
+    this.loginService.doLogin(this.mail);
+  }
 }

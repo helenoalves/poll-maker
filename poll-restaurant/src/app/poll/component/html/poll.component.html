@@ -1,7 +1,7 @@
 <div class="collection">
   <h3 id="text-poll" class="header center orange-text">Poll List</h3>
   <div *ngFor="let thePoll of polls; let i = index">
-    <a [routerLink]="['/poll-details', { poll: thePoll | json, mail: mail }]" class="collection-item">
+    <a [routerLink]="['/poll-details', { poll: thePoll | json, mail: mail }]" skipLocationChange class="collection-item blue-grey-text">
           {{thePoll.title}} - {{thePoll.start | date:'dd/MM/yyyy HH:mm' }} to {{thePoll.finish | date:'dd/MM/yyyy HH:mm' }} 
           <span class="new badge green" data-badge-caption=" Option(s)">{{thePoll.options.length}}</span>
         </a>
