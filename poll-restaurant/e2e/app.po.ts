@@ -30,6 +30,10 @@ export class PollRestaurantPage {
     return element(by.id('text-poll'));
   }
 
+  getTextErrorElement() {
+    return element(by.id('text-error'));
+  }
+
   getTextTitleElement() {
     return element(by.id('text-title'));
   }

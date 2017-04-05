@@ -10,7 +10,7 @@ import { Poll } from '../../poll/model/poll';
 
 @Injectable()
 export class PollService {
-  errorEmitter = new EventEmitter<Response>();
+  errorEmitter = new EventEmitter<string>();
   private poll: Poll;
 
   constructor(private configService: ConfigService, private http: Http, private router: Router) {
@@ -36,7 +36,7 @@ export class PollService {
     return this.http.get(this.replaceParameters(mail, pollId, choiceId))
       .map(this.extractData)
       //.do(data => console.log(data))
-      .catch(this.handleError);
+      .catch(error => this.handleError(error.json().message));
   }
 
   private extractData(res: Response) {
@@ -46,8 +46,9 @@ export class PollService {
     return <Poll>res.json() || [];
   }
 
-  private handleError(error: Response) {
+  private handleError(error: string) {
     console.error(error);
+    this.errorEmitter.emit(error);
     return Observable.throw(error || 'Undefined Error on Server Access !');
   }
 
@@ -55,7 +56,7 @@ export class PollService {
     this.votePoll(mail, pollId, choiceId)
       .subscribe(
       poll => { this.pollResults(poll, mail) }
-      , error => this.errorEmitter.emit(error)
+      , error => this.handleError(error)
       );
   }
 
